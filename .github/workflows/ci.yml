@@ -1,22 +1,23 @@
 on: push
 
 jobs:
-  test:
+  connect:
     runs-on: ubntu-latest
 
     steps:
-      - name: Checkout repository
-	      uses: actions/checkout@v6
+      - name: Install sshpass
+        run:
+          sudo apt-get update
+          sudo apt-get install -y sshpass
 
-      - name: Setup Python
-	      uses: actions/setup-python@v6
-	      with:
-	        python-version: '3.11.2'
+      - name: Connect to VPS
+	      run: |
+          export SSHPASS='gQa4usuhWz4w'
 
-      - name: Install dependencies
-	      run: pip install pytest
-
-      - name: Run tests
-	      run: pytest -v
+          sshpass -e ssh \
+            -o StrictHostKeyChecking=accept-new \
+            -p 22 \\
+            root@153.75.83.209 \
+            "whoami && hostname && uptime"
 
 	
